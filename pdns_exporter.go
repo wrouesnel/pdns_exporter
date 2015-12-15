@@ -157,7 +157,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	e.scrape(ch)
 
 	e.mtx.RLock()
-	defer e.mtx.Unlock()
+	defer e.mtx.RUnlock()
 
 	// Emit metrics
 	for key, value := range e.metricCache {
