@@ -164,9 +164,13 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		var help string
 		help, ok := metricDescriptions[key]
 		if !ok {
-			help = fmt.Sprintf("unknown metric: %s", help)
+			help = fmt.Sprintf("unknown metric: %s", key)
 		}
-		desc := prometheus.NewDesc(key, help, nil, nil)
+
+		// Post-process name to prometheus style
+		escapedKey := strings.Replace(key, "-", "_", -1)
+
+		desc := prometheus.NewDesc(escapedKey, help, nil, nil)
 		ch <- prometheus.MustNewConstMetric(desc, prometheus.UntypedValue, value)
 	}
 
@@ -231,9 +235,6 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 		key := vals[0]	// Metric name
 		value := vals[1]	// Metric value
 
-		// Post-process name to prometheus style
-		prometheusKey := strings.Replace(key, "-", "_", -1)
-
 		// Post process value to prometheus format
 		prometheusValue, err := strconv.ParseFloat(value, 64)
 		if err != nil {
@@ -242,7 +243,7 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 			return
 		}
 
-		e.metricCache[prometheusKey] = prometheusValue
+		e.metricCache[key] = prometheusValue
 	}
 }
 
