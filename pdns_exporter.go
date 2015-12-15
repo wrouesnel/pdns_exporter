@@ -179,6 +179,7 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 		log.Debugln("Rate-limiting request - cached data will be used.")
 		return
 	}
+	log.Debugln("Cooldown expired, getting new data")
 	e.lastPoll = time.Now()
 
 	e.error.Set(0)
