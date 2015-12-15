@@ -1,0 +1,3 @@
+#!/bin/bash
+GOARCH=amd64 go build -o pdns_exporter.x86_64
+GOARCH=386 go build -o pdns_exporter.i386
