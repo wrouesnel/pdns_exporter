@@ -173,6 +173,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 	// Check if poll allowed
 	if (e.lastPoll.Sub(time.Now()) < e.rateLimiterCooldown) && e.rateLimiterEnabled {
+		log.Debugln("Rate-limiting request - cached data will be used.")
 		return
 	}
 	e.lastPoll = time.Now()
