@@ -106,6 +106,9 @@ func NewExporter(pdnsControlSocket string, rateLimiterEnabled bool, rateLimiterC
 		}),
 		rateLimiterEnabled,
 		rateLimiterCooldown,
+		time.Time{},
+		make(map[string]float64),
+		sync.RWMutex{},
 	}
 }
 
