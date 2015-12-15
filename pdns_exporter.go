@@ -170,7 +170,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		// Post-process name to prometheus style
 		escapedKey := strings.Replace(key, "-", "_", -1)
 
-		desc := prometheus.NewDesc(escapedKey, help, nil, nil)
+		desc := prometheus.NewDesc(fmt.Sprintf("%s_%s", namespace, escapedKey), help, nil, nil)
 		ch <- prometheus.MustNewConstMetric(desc, prometheus.UntypedValue, value)
 	}
 
