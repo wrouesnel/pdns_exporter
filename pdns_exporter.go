@@ -30,7 +30,7 @@ var (
 	listenAddress     = flag.String("web.listen-address", ":34576", "Address on which to expose metrics and web interface.")
 	metricsPath       = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 
-	pdnsControlSocket = flag.String("collector.powerdns.socket", "unix:/var/run/pdns.controlsocket", "Connect string to control socket")
+	pdnsControlSocket = flag.String("collector.powerdns.socket", "unix:/var/run/pdns.controlsocket", "Connect string to control socket. Can be a comma separated list.")
 	rateLimitUpdates  = flag.Bool("collector.rate-limit.enable", true, "Limit the number of metric queries to collector.rate-limit.min-cooldown")
 	minCooldown		  = flag.Duration("collector.rate-limit.min-cooldown", time.Duration(time.Second * 10), "Minimum cooldown time between metric polls to PowerDNS")
 )
@@ -103,6 +103,7 @@ func NewExporter(pdnsControlSocket string, rateLimiterEnabled bool, rateLimiterC
 			Subsystem: subsystem,
 			Name: "last_scrape_error",
 			Help: "1 if the last scrape failed for any reason",
+			ConstLabels: prometheus.Labels{"controlsocket" : addr },
 		}),
 		rateLimiterEnabled,
 		rateLimiterCooldown,
@@ -170,7 +171,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		// Post-process name to prometheus style
 		escapedKey := strings.Replace(key, "-", "_", -1)
 
-		desc := prometheus.NewDesc(fmt.Sprintf("%s_%s", namespace, escapedKey), help, nil, nil)
+		desc := prometheus.NewDesc(fmt.Sprintf("%s_%s", namespace, escapedKey), help, nil, prometheus.Labels{"controlsocket" : e.controlAddr})
 		ch <- prometheus.MustNewConstMetric(desc, prometheus.UntypedValue, value)
 	}
 
@@ -250,8 +251,11 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 func main() {
 	flag.Parse()
 
-	ex := NewExporter(*pdnsControlSocket, *rateLimitUpdates, *minCooldown)
-	prometheus.MustRegister(ex)
+	controlSockets := strings.Split(*pdnsControlSocket, ",")
+	for _, addr := range controlSockets {
+		ex := NewExporter(addr, *rateLimitUpdates, *minCooldown)
+		prometheus.MustRegister(ex)
+	}
 
 	router := httprouter.New()
 	router.Handler("GET", "/metrics", prometheus.Handler())
