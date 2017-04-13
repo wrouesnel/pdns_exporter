@@ -21,13 +21,13 @@ import (
 	"sync"
 )
 
-const namespace = "pdns"
+const namespace = "powerdns"
 const subsystem = "exporter"
 
 var (
 	Version = "0.0.0.dev"
 
-	listenAddress     = flag.String("web.listen-address", ":34576", "Address on which to expose metrics and web interface.")
+	listenAddress     = flag.String("web.listen-address", ":9120", "Address on which to expose metrics and web interface.")
 	metricsPath       = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 
 	pdnsControlSocket = flag.String("collector.powerdns.socket", "unix:/var/run/pdns.controlsocket", "Connect string to control socket. Can be a comma separated list.")
@@ -263,15 +263,15 @@ func main() {
 	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		defer r.Body.Close()
 		w.Write([]byte(`<html>
-			<head><title>PowerDNS quick exporter</title></head>
+			<head><title>PowerDNS exporter</title></head>
 			<body>
-			<h1>PowerDNS quick exporter</h1>
+			<h1>PowerDNS exporter</h1>
 			<p><a href="` + *metricsPath + `">Metrics</a></p>
 			</body>
 			</html>`))
 	})
 
-	log.Infof("Starting pdns_exporter v%s at %s", Version, *listenAddress)
+	log.Infof("Starting pdns_exporter %s at %s", Version, *listenAddress)
 	err := http.ListenAndServe(*listenAddress, router)
 	if err != nil {
 		log.Fatal(err)
