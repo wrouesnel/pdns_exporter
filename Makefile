@@ -38,7 +38,7 @@ fmt:
 test:
 	go test -v -covermode count -coverprofile=cover.test.out
 
-test-integration: postgres_exporter postgres_exporter_integration_test
+test-integration: $(PROGNAME) $(PROGNAME)_integration_test
 	# TODO(wrouesnel): add docker-based test suite
 	/bin/true
 #	tests/test-smoke "$(shell pwd)/postgres_exporter" "$(shell pwd)/postgres_exporter_integration_test_script $(shell pwd)/postgres_exporter_integration_test $(shell pwd)/cover.integration.out"
