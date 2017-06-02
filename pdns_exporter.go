@@ -15,6 +15,7 @@ import (
 	"github.com/prometheus/common/log"
 	"io"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -25,14 +26,16 @@ const namespace = "powerdns"
 const subsystem = "exporter"
 
 var (
+	// Version is populated during build.
 	Version = "0.0.0.dev"
 
+	printVersion  = flag.Bool("version", false, "Print version and exit.")
 	listenAddress = flag.String("web.listen-address", ":9120", "Address on which to expose metrics and web interface.")
 	metricsPath   = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 
 	pdnsControlSocket = flag.String("collector.powerdns.socket", "unix:/var/run/pdns.controlsocket", "Connect string to control socket. Can be a comma separated list.")
 	rateLimitUpdates  = flag.Bool("collector.rate-limit.enable", true, "Limit the number of metric queries to collector.rate-limit.min-cooldown")
-	minCooldown       = flag.Duration("collector.rate-limit.min-cooldown", time.Duration(time.Second*10), "Minimum cooldown time between metric polls to PowerDNS")
+	minCooldown       = flag.Duration("collector.rate-limit.min-cooldown", time.Second*10, "Minimum cooldown time between metric polls to PowerDNS")
 )
 
 var metricDescriptions = map[string]string{
@@ -90,6 +93,7 @@ var metricDescriptions = map[string]string{
 	"user-msec":              "Number of milliseconds spend in CPU 'user' time",
 }
 
+// NewExporter creates a new PowerDNS to Prometheus metrics exporter.
 func NewExporter(pdnsControlSocket string, rateLimiterEnabled bool, rateLimiterCooldown time.Duration) *Exporter {
 	splitAddr := strings.Split(pdnsControlSocket, ":")
 	proto := splitAddr[0]
@@ -113,6 +117,7 @@ func NewExporter(pdnsControlSocket string, rateLimiterEnabled bool, rateLimiterC
 	}
 }
 
+// Exporter implements prometheus.Collector for PowerDNS
 type Exporter struct {
 	// Connect config
 	controlProto string
@@ -178,9 +183,10 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	e.error.Collect(ch)
 }
 
+// nolint: gocyclo
 func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 	// Check if poll allowed
-	if (time.Now().Sub(e.lastPoll) < e.rateLimiterCooldown) && e.rateLimiterEnabled {
+	if (time.Since(e.lastPoll) < e.rateLimiterCooldown) && e.rateLimiterEnabled {
 		log.Debugln("Rate-limiting request - cached data will be used.")
 		return
 	}
@@ -196,7 +202,7 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 		e.error.Set(1)
 		return
 	}
-	defer conn.Close()
+	defer conn.Close() // nolint: errcheck
 
 	_, err = conn.Write([]byte("SHOW *\n"))
 	if err != nil {
@@ -251,6 +257,13 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 func main() {
 	flag.Parse()
 
+	if *printVersion {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
+
+	log.Infoln("PowerDNS Exporter:", Version)
+
 	controlSockets := strings.Split(*pdnsControlSocket, ",")
 	for _, addr := range controlSockets {
 		ex := NewExporter(addr, *rateLimitUpdates, *minCooldown)
@@ -261,7 +274,8 @@ func main() {
 	router.Handler("GET", "/metrics", prometheus.Handler())
 
 	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-		defer r.Body.Close()
+		defer r.Body.Close() // nolint: errcheck
+		// nolint: errcheck
 		w.Write([]byte(`<html>
 			<head><title>PowerDNS exporter</title></head>
 			<body>

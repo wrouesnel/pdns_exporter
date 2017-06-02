@@ -1,60 +1,38 @@
-GO_SRC := $(shell find -type f -name '*.go' ! -path '*/vendor/*')
 
-PROGNAME := pdns_exporter
-CONTAINER_NAME ?= wrouesnel/$(PROGNAME):latest
+GO_SRC := $(shell find . -name '*.go' ! -path '*/vendor/*' ! -path 'tools/*' )
+GO_DIRS := $(shell find . -type d -name '*.go' ! -path '*/vendor/*' ! -path 'tools/*' )
+GO_PKGS := $(shell go list ./... | grep -v '/vendor/')
+
+BINARY = pdns_exporter
 VERSION ?= $(shell git describe --dirty)
 
-all: style vet test $(PROGNAME)
+COVERDIR = ".coverage"
+TOOLDIR = tools
 
-# Cross compilation (e.g. if you are on a Mac)
-cross: docker-build docker
+export PATH := $(TOOLDIR):$(PATH)
 
-# Simple go build
-$(PROGNAME): $(GO_SRC)
-	CGO_ENABLED=0 go build -a -ldflags "-extldflags '-static' -X main.Version=$(VERSION)" -o $(PROGNAME) .
+all: style lint test $(BINARY).x86_64
 
-$(PROGNAME)_integration_test: $(GO_SRC)
-	CGO_ENABLED=0 go test -c -tags integration \
-	    -a -ldflags "-extldflags '-static' -X main.Version=$(VERSION)" -o $(PROGNAME)_integration_test -cover -covermode count .
+$(BINARY).x86_64: $(GO_SRC)
+	CGO_ENABLED=0 GOARCH=amd64 go build -a -ldflags "-extldflags '-static' -X main.Version=$(VERSION)" -o $(BINARY).x86_64 .
 
-# Take a go build and turn it into a minimal container
-docker: $(PROGNAME)
-	docker build -t $(CONTAINER_NAME) .
+style: tools
+	gometalinter --vendored-linters --disable-all --enable=gofmt --vendor
 
-lint:
-	go lint 
+lint: tools
+	gometalinter --vendored-linters --disable=gotype $(GO_DIRS)
 
-vet:
-	go vet
-
-# Check code conforms to go fmt
-style:
-	! gofmt -s -l $(GO_SRC) 2>&1 | read 2>/dev/null
-
-# Format the code
-fmt:
+fmt: tools
 	gofmt -s -w $(GO_SRC)
 
-test:
-	go test -v -covermode count -coverprofile=cover.test.out
+test: tools
+	@mkdir -p $(COVERDIR)
+	for pkg in $(GO_PKGS) ; do \
+		go test -v -covermode count -coverprofile=$(COVERDIR)/$(echo $$pkg | tr '/' '-').out $(pkg) ; \
+	done
+	gocovmerge $(shell find $(COVERDIR) -name '*.out') > cover.out
 
-test-integration: $(PROGNAME) $(PROGNAME)_integration_test
-	# TODO(wrouesnel): add docker-based test suite
-	/bin/true
-#	tests/test-smoke "$(shell pwd)/postgres_exporter" "$(shell pwd)/postgres_exporter_integration_test_script $(shell pwd)/postgres_exporter_integration_test $(shell pwd)/cover.integration.out"
+tools:
+	$(MAKE) -C tools
 
-# Do a self-contained docker build - we pull the official upstream container
-# and do a self-contained build.
-docker-build:
-	docker run -v $(shell pwd):/go/src/github.com/wrouesnel/$(PROGNAME) \
-	    -v $(shell pwd):/real_src \
-	    -e SHELL_UID=$(shell id -u) -e SHELL_GID=$(shell id -g) \
-	    -w /go/src/github.com/wrouesnel/$(PROGNAME) \
-		golang:1.8-wheezy \
-		/bin/bash -c "make >&2 && chown $$SHELL_UID:$$SHELL_GID ./$(PROGNAME)"
-	docker build -t $(CONTAINER_NAME) .
-
-push:
-	docker push $(CONTAINER_NAME)
-
-.PHONY: docker-build docker test vet push cross
+.PHONY: tools style fmt test all

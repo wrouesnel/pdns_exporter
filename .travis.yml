@@ -1,28 +1,14 @@
-sudo: required
-services:
-- docker
 language: go
 go:
-- '1.7.5'
-# Make sure we have p2 and the postgres client.
-before_install:
-- go get -v github.com/mattn/goveralls
-- sudo wget -O /usr/local/bin/p2 https://github.com/wrouesnel/p2cli/releases/download/r4/p2 &&
-  sudo chmod +x /usr/local/bin/p2
-- sudo wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.9.0-rc4/docker-compose-Linux-x86_64 &&
-  sudo chmod +x /usr/local/bin/docker-compose
-
+- '1.8'
 script:
 - make all
-- make docker
-- make test-integration
-- $HOME/gopath/bin/goveralls -coverprofile=cover.test.out -service=travis-ci
-#after_success:
-#- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-# Push a tagged build if a tag is found.
-#- if [ ! -z "$TRAVIS_TAG" ]; then
-#    docker tag wrouesnel/pdns_exporter:latest wrouesnel/pdns_exporter:$TRAVIS_TAG ;
-#    docker push wrouesnel/pdns_exporter:$TRAVIS_TAG ;
-#  fi
-# Push a latest version
-#- if [ "$TRAVIS_BRANCH" == "master" ]; then docker push wrouesnel/pdns_exporter ; fi
+- tools/goveralls -coverprofile=cover.test.out -service=travis-ci
+deploy:
+  provider: releases
+  api_key:
+    secure: J6AWC4hXvBOF4lWiwzVJKwlv/3cIB3WoPNAtIPWNohOxORfJRjaP36WIsRofhGf31SSDUGltT93ydjQRwcVWS9s5JiC4P8FDJbmYFwrHfF7OIoYULHvtwWX7BmLBim4R/dSKX1oZmlPbuS2rdiR0HanFHMNvyUYJdaZg9c9tTRqNpzEaYnSnBabHVpBrXrzNMEzECfhrShfKuDeDYlNtm9h8KaYta07gKG4uCmuVSEmW67sSvpbgax497jfd4P0ebMe1PMH9mZvGJYK5hQzffPi+J/1XU8iqYloi92Iw+P5Ctmt1Ov8scDnRc0wwsj7pw6aUTY8/V4GS4PvHC2LcL30uhJGm6gbbSTQsSxJMOACJqoLf5nNOiQl0OJmi6LaN+oEIjZdVFTqHWB/UJd0FBdUl4GgRu5BnWtehSWvGrC8KT80JKQV6gMrkCchPkpqnkTpN/XR8fp/f3CdzUt2ax2rIobd8J+cmjKRMIaj6dn5TY0gry16uI1/hfNdPnC/z5Dfwx7eKdfjLNrSlaSpliTcDm5QYKvnClrfXrxLFavBev39uJdXDH8oqlpWHkMABP8wJPOk781jKcp+UnQmZV3GaIaATT+Rl1gc2+pzpkw1uMSbViIE4vNOaQ1SrQqEWSkI5ZdsZ5QPNmHq5X6lBtxLU7SLUNC72qFX2yNv/Y24=
+  file: pdns_exporter.x86_64
+  on:
+    tags: true
+    repo: wrouesnel/pdns_exporter

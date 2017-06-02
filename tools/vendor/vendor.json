@@ -1,0 +1,199 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "4Tc07iR3HloUYC4HNT4xc0875WY=",
+			"path": "github.com/Bowery/prompt",
+			"revision": "0f1139e9a1c74b57ccce6bdb3cd2f7cd04dd3449",
+			"revisionTime": "2017-02-19T07:16:37Z"
+		},
+		{
+			"checksumSHA1": "zCnRL4ozOPngF6cn+bgZ9A4D+xE=",
+			"path": "github.com/alecthomas/gometalinter",
+			"revision": "fed116ef099c86fa41f60754555e85b7be704033",
+			"revisionTime": "2017-05-14T07:52:09Z"
+		},
+		{
+			"checksumSHA1": "fCc3grA7vIxfBru7R3SqjcW+oLI=",
+			"path": "github.com/alecthomas/units",
+			"revision": "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a",
+			"revisionTime": "2015-10-22T06:55:26Z"
+		},
+		{
+			"checksumSHA1": "ULnk7ggN82JFO0ZdBCmSsQH3Vh8=",
+			"path": "github.com/dchest/safefile",
+			"revision": "855e8d98f1852d48dde521e0522408d1fe7e836a",
+			"revisionTime": "2015-10-22T10:31:44Z"
+		},
+		{
+			"checksumSHA1": "e/Kc2UOy1lKAy31xWlK37M1r2e8=",
+			"path": "github.com/google/shlex",
+			"revision": "6f45313302b9c56850fc17f99e40caebce98c716",
+			"revisionTime": "2015-01-27T13:39:51Z"
+		},
+		{
+			"checksumSHA1": "NKvKUGq0lp/GjLS7Ffp7BAjcoTg=",
+			"path": "github.com/kardianos/govendor",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "m24kWw3bFoAkKVvTjmxSLsywdHY=",
+			"path": "github.com/kardianos/govendor/cliprompt",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "/6r+luJ0EK07RknNd0zrubHtMuQ=",
+			"path": "github.com/kardianos/govendor/context",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "Y0WMEgLxFAzHAIxFViFSWh7dqqY=",
+			"path": "github.com/kardianos/govendor/help",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "SPRzsXaOsg9dENhLfHRjmFMmGQM=",
+			"path": "github.com/kardianos/govendor/internal/pathos",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "Bl6I6yMiK60dzOAfyO7As6MSPIk=",
+			"path": "github.com/kardianos/govendor/internal/vfilepath",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "2Vg+J79rEhmtnprErQ7fTZdneIk=",
+			"path": "github.com/kardianos/govendor/internal/vos",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "rpK9ccIJkLV4IbKb3lUjUo5DSfU=",
+			"path": "github.com/kardianos/govendor/migrate",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "wL4SaLS/HTn32Gmq8kpYRr/cn68=",
+			"path": "github.com/kardianos/govendor/pkgspec",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "I9oQBOtXoOinofTJrBE+zI+vDCs=",
+			"path": "github.com/kardianos/govendor/prompt",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "tXbK0YAL7/ZrLWkokBrLdp30xjw=",
+			"path": "github.com/kardianos/govendor/run",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "ZDlz1nWDmErU501lCChKbTT3kEs=",
+			"path": "github.com/kardianos/govendor/vcs",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "oXa3HaUXhXktMp4C0xTOSrzPDTE=",
+			"path": "github.com/kardianos/govendor/vendorfile",
+			"revision": "c86c10d612bf08e847456ce91d495eb69ad87087",
+			"revisionTime": "2017-05-06T05:20:04Z"
+		},
+		{
+			"checksumSHA1": "GPZAI/PpSx3m5De6YxataiBWBvQ=",
+			"path": "github.com/mattn/goveralls",
+			"revision": "a2cbbd7cdce4f5e051016fedf639c64bb05ef031",
+			"revisionTime": "2017-05-13T16:02:34Z"
+		},
+		{
+			"checksumSHA1": "uEc9/1HbYGeK7wPStF6FmUlfzGE=",
+			"path": "github.com/nicksnyder/go-i18n/i18n",
+			"revision": "3e70a1a463008cea6726380c908b1a6a8bdf7b24",
+			"revisionTime": "2017-05-12T15:20:54Z"
+		},
+		{
+			"checksumSHA1": "gDe7nlx3FyCVxLkARgl0VAntDRk=",
+			"path": "github.com/nicksnyder/go-i18n/i18n/bundle",
+			"revision": "3e70a1a463008cea6726380c908b1a6a8bdf7b24",
+			"revisionTime": "2017-05-12T15:20:54Z"
+		},
+		{
+			"checksumSHA1": "+XOg99I1zdmBRUb04ZswvzQ2WS0=",
+			"path": "github.com/nicksnyder/go-i18n/i18n/language",
+			"revision": "3e70a1a463008cea6726380c908b1a6a8bdf7b24",
+			"revisionTime": "2017-05-12T15:20:54Z"
+		},
+		{
+			"checksumSHA1": "WZOU406In2hs8FJOHWqV8PWkJKs=",
+			"path": "github.com/nicksnyder/go-i18n/i18n/translation",
+			"revision": "3e70a1a463008cea6726380c908b1a6a8bdf7b24",
+			"revisionTime": "2017-05-12T15:20:54Z"
+		},
+		{
+			"checksumSHA1": "F1IYMLBLAZaTOWnmXsgaxTGvrWI=",
+			"path": "github.com/pelletier/go-buffruneio",
+			"revision": "c37440a7cf42ac63b919c752ca73a85067e05992",
+			"revisionTime": "2017-02-27T22:03:11Z"
+		},
+		{
+			"checksumSHA1": "7gJHE4JrF3Z2rlm9XVOd/YffP+0=",
+			"path": "github.com/pelletier/go-toml",
+			"revision": "e94d595cd4f0394765f92e161ea1c66680bf868e",
+			"revisionTime": "2017-06-02T04:42:09Z"
+		},
+		{
+			"checksumSHA1": "rJab1YdNhQooDiBWNnt7TLWPyBU=",
+			"path": "github.com/pkg/errors",
+			"revision": "c605e284fe17294bda444b34710735b29d1a9d90",
+			"revisionTime": "2017-05-05T04:36:39Z"
+		},
+		{
+			"checksumSHA1": "ih4CCYD19rjjF9fjid+l7w/+cIg=",
+			"path": "github.com/wadey/gocovmerge",
+			"revision": "b5bfa59ec0adc420475f97f89b58045c721d761c",
+			"revisionTime": "2016-03-31T18:18:00Z"
+		},
+		{
+			"checksumSHA1": "PugQbLLjnbBSj+NOXRYBVRnLuuQ=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "b90f89a1e7a9c1f6b918820b3daa7f08488c8594",
+			"revisionTime": "2017-05-29T13:44:53Z"
+		},
+		{
+			"checksumSHA1": "O5eYI3n1WdaC30AxQjETe3dAQHU=",
+			"path": "golang.org/x/tools/cover",
+			"revision": "bc6db94186c03835daa5c1c679fba599dc1f3b79",
+			"revisionTime": "2017-05-28T22:52:52Z"
+		},
+		{
+			"checksumSHA1": "TNJiDMoJEKYZyXo8Vkj37gqH5A0=",
+			"path": "golang.org/x/tools/go/vcs",
+			"revision": "bc6db94186c03835daa5c1c679fba599dc1f3b79",
+			"revisionTime": "2017-05-28T22:52:52Z"
+		},
+		{
+			"checksumSHA1": "1FcU7G3PX7GVBLOrtxtvDWVvImo=",
+			"path": "gopkg.in/alecthomas/kingpin.v3-unstable",
+			"revision": "bd961acaef2390fc48159c3acaad41ef31833920",
+			"revisionTime": "2017-05-21T07:44:49Z"
+		},
+		{
+			"checksumSHA1": "fALlQNY1fM99NesfLJ50KguWsio=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b",
+			"revisionTime": "2017-04-07T17:21:22Z"
+		}
+	],
+	"rootPath": "github.com/wrouesnel/pdns_exporter/tools"
+}
