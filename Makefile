@@ -9,7 +9,7 @@ GO_PKGS := $(shell go list ./... | grep -v '/vendor/')
 BINARY = $(shell basename $(shell pwd))
 VERSION ?= $(shell git describe --dirty)
 
-CONCURRENT_LINTERS=$(shell cat /proc/cpuinfo | grep processor | wc -l)
+CONCURRENT_LINTERS ?= $(shell cat /proc/cpuinfo | grep processor | wc -l)
 
 export PATH := $(TOOLDIR)/bin:$(PATH)
 SHELL := env PATH=$(PATH) /bin/bash
