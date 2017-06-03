@@ -3,7 +3,7 @@ go:
 - '1.8'
 script:
 - make all
-- tools/goveralls -coverprofile=cover.test.out -service=travis-ci
+- tools/bin/goveralls -coverprofile=cover.test.out -service=travis-ci
 deploy:
   provider: releases
   api_key:
