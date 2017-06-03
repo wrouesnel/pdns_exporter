@@ -14,18 +14,21 @@ get_metalinters := gometalinter --help | grep -oP '  \w+  \(.+\)' | tr -s ' ' | 
 TOOL_SRCS := github.com/kardianos/govendor \
  github.com/wadey/gocovmerge \
  github.com/mattn/goveralls \
- github.com/alecthomas/gometalinter \
- $(shell $(get_metalinters))
+ github.com/alecthomas/gometalinter
 
 GO_SRC := $(shell find $(SOURCEDIR) -name '*.go')
 
 GO := GOPATH=$(shell pwd) go
 
-all: $(addprefix bin/,$(notdir $(TOOL_SRCS)))
+DEFAULT: all
 
-tools.deps: $(GO_SRC)
+bin/gometalinter: $(GO_SRC)
+	$(GO) install -v github.com/alecthomas/gometalinter
+
+tools.deps: bin/gometalinter $(GO_SRC)
 	# Generate build patterns for all the tools
-	for pkg in $(TOOL_SRCS); do \
+	echo -e "TOOL_SRCS+=$(shell $(get_metalinters))" > tools.deps
+	for pkg in $(TOOL_SRCS) $(shell $(get_metalinters)) ; do \
 		echo -e "bin/$$(basename $$pkg): $$GO_SRC\n\t\$$(GO) install -v $$pkg" ; \
 	done >> tools.deps
 
@@ -47,7 +50,9 @@ update-phase-2:
 	done	
 
 clean:
-	rm -rf bin pkg
+	rm -rf bin pkg tools.d
+
+all: $(addprefix bin/,$(notdir $(TOOL_SRCS)))
 
 # TOOL_SRCS is included here since we'll never really have these files.
 .PHONY: all update clean $(TOOL_SRCS)
