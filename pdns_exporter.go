@@ -12,6 +12,7 @@ import (
 	"bytes"
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
 	"io"
 	"net"
@@ -271,11 +272,11 @@ func main() {
 	}
 
 	router := httprouter.New()
-	router.Handler("GET", "/metrics", prometheus.Handler())
+	router.Handler("GET", "/metrics", promhttp.Handler())
 
 	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-		defer r.Body.Close() // nolint: errcheck
-		// nolint: errcheck
+		defer r.Body.Close() // nolint: errcheck, gas
+		// nolint: errcheck, gas
 		w.Write([]byte(`<html>
 			<head><title>PowerDNS exporter</title></head>
 			<body>

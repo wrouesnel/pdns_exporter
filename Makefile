@@ -1,26 +1,27 @@
 
+COVERDIR = .coverage
+TOOLDIR = tools
+
 GO_SRC := $(shell find . -name '*.go' ! -path '*/vendor/*' ! -path 'tools/*' )
 GO_DIRS := $(shell find . -type d -name '*.go' ! -path '*/vendor/*' ! -path 'tools/*' )
 GO_PKGS := $(shell go list ./... | grep -v '/vendor/')
 
-BINARY = pdns_exporter
+BINARY = $(shell basename $(shell pwd))
 VERSION ?= $(shell git describe --dirty)
 
-COVERDIR = ".coverage"
-TOOLDIR = tools
-
-export PATH := $(TOOLDIR):$(PATH)
+export PATH := $(TOOLDIR)/bin:$(PATH)
+SHELL := env PATH=$(PATH) /bin/bash
 
 all: style lint test $(BINARY).x86_64
 
 $(BINARY).x86_64: $(GO_SRC)
-	CGO_ENABLED=0 GOARCH=amd64 go build -a -ldflags "-extldflags '-static' -X main.Version=$(VERSION)" -o $(BINARY).x86_64 .
+	CGO_ENABLED=0 go build -a -ldflags "-extldflags '-static' -X main.Version=$(VERSION)" -o $(BINARY).x86_64 .
 
 style: tools
-	gometalinter --vendored-linters --disable-all --enable=gofmt --vendor
+	gometalinter --disable-all --enable=gofmt --vendor
 
 lint: tools
-	gometalinter --vendored-linters --disable=gotype $(GO_DIRS)
+	gometalinter --disable=gotype $(GO_DIRS)
 
 fmt: tools
 	gofmt -s -w $(GO_SRC)
@@ -33,6 +34,6 @@ test: tools
 	gocovmerge $(shell find $(COVERDIR) -name '*.out') > cover.out
 
 tools:
-	$(MAKE) -C tools
+	$(MAKE) -C $(TOOLDIR)
 
 .PHONY: tools style fmt test all
