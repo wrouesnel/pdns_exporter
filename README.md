@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/wrouesnel/pdns_exporter.svg?branch=master)](https://travis-ci.org/wrouesnel/pdns_exporter)
 [![Coverage Status](https://coveralls.io/repos/github/wrouesnel/pdns_exporter/badge.svg?branch=master)](https://coveralls.io/github/wrouesnel/pdns_exporter?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wrouesnel/pdns_exporter)](https://goreportcard.com/report/github.com/wrouesnel/pdns_exporter)
 
 # PowerDNS Prometheus Exporter
 
