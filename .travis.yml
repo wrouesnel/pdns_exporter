@@ -5,7 +5,7 @@ cache:
   directories:
   - tools/bin
 script:
-- CONCURRENT_LINTERS=1 make all
+- CONCURRENT_LINTERS=1 LINTER_DEADLINE=180s make all
 - tools/bin/goveralls -coverprofile=cover.out -service=travis-ci
 deploy:
   provider: releases
