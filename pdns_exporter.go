@@ -29,6 +29,11 @@ const subsystem = "exporter"
 
 const netUnixgram = "unixgram"
 
+const (
+	ExportAuthoritative string = "authoritative"
+	ExportRecursor string = "recursor"
+)
+
 var (
 	// Version is populated during build.
 	Version = "0.0.0.dev"
@@ -37,7 +42,7 @@ var (
 	listenAddress = flag.String("web.listen-address", ":9120", "Address on which to expose metrics and web interface.")
 	metricsPath   = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 
-	pdnsControlSocket = flag.String("collector.powerdns.socket", "unix:/var/run/pdns.controlsocket", "Connect string to control socket. Can be a comma separated list.")
+	pdnsControlSocket = flag.String("collector.powerdns.socket", "authoritative:unix:/var/run/pdns.controlsocket", "Connect string to control socket. Can be a comma separated list.")
 	localSocketMode   = flag.Uint("collector.powerdns.local-socket.mode", 0640, "Mode to set on the local unixgram reply socket if using unixgrams.")
 
 	tmpDirPrefix = flag.String("collector.tempdir.prefix", "", "Specify directory prefix for temporry sockets. Must be a path pdns_recursor can find if using a dockerized exporter.")
@@ -45,8 +50,6 @@ var (
 	rateLimitUpdates  = flag.Bool("collector.rate-limit.enable", true, "Limit the number of metric queries to collector.rate-limit.min-cooldown")
 	minCooldown       = flag.Duration("collector.rate-limit.min-cooldown", time.Second*10, "Minimum cooldown time between metric polls to PowerDNS")
 	collectionTimeout = flag.Duration("collector.timeout", time.Second*1, "Timeout before giving up on scraping PowerDNS socket")
-
-	isRecursor = flag.Bool("collector.powerdns.recursor", false, "The target control socket is for pdns_recursor")
 )
 
 var authMetricDescriptions = map[string]string{
@@ -495,8 +498,22 @@ func main() {
 
 	controlSockets := strings.Split(*pdnsControlSocket, ",")
 	for _, addr := range controlSockets {
-		ex := NewExporter(addr, *rateLimitUpdates, *minCooldown, *isRecursor, *collectionTimeout, *tmpDirPrefix, *localSocketMode)
+		addressSpec := strings.SplitN(addr, ":",2)
+		exporterType := addressSpec[0]
+		controlSocket := addressSpec[1]
+
+		var isRecursor bool
+		switch exporterType {
+		case ExportAuthoritative:
+			isRecursor = false
+		case ExportRecursor:
+			isRecursor = true
+		default:
+			log.Fatalln("Unknown process type specified:", exporterType, addr)
+		}
+		ex := NewExporter(controlSocket, *rateLimitUpdates, *minCooldown, isRecursor, *collectionTimeout, *tmpDirPrefix, *localSocketMode)
 		prometheus.MustRegister(ex)
+		log.Infoln("Registered new exporter for", exporterType, "at", controlSocket)
 	}
 
 	router := httprouter.New()
