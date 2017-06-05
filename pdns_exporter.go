@@ -30,8 +30,8 @@ const subsystem = "exporter"
 const netUnixgram = "unixgram"
 
 const (
-	ExportAuthoritative string = "authoritative"
-	ExportRecursor string = "recursor"
+	exportAuthoritative string = "authoritative"
+	exportRecursor      string = "recursor"
 )
 
 var (
@@ -498,15 +498,15 @@ func main() {
 
 	controlSockets := strings.Split(*pdnsControlSocket, ",")
 	for _, addr := range controlSockets {
-		addressSpec := strings.SplitN(addr, ":",2)
+		addressSpec := strings.SplitN(addr, ":", 2)
 		exporterType := addressSpec[0]
 		controlSocket := addressSpec[1]
 
 		var isRecursor bool
 		switch exporterType {
-		case ExportAuthoritative:
+		case exportAuthoritative:
 			isRecursor = false
-		case ExportRecursor:
+		case exportRecursor:
 			isRecursor = true
 		default:
 			log.Fatalln("Unknown process type specified:", exporterType, addr)
