@@ -393,6 +393,9 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 				log.Errorln("read:", err)
 				readResult <- 1
 				return
+			} else if err == io.EOF {
+				readResult <- 0
+				return
 			}
 			if n == 0 {
 				readResult <- 1
@@ -430,10 +433,12 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 
 	select {
 	case <-timeoutCh:
+		log.Errorln("timeout waiting for powerdns response")
 		e.error.Set(1)
 		return
 	case result := <-readResult:
 		if result > 0 {
+			log.Errorln("error in read response: status", result)
 			e.error.Set(1)
 			return
 		}
