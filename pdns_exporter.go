@@ -522,7 +522,7 @@ func main() {
 	}
 
 	router := httprouter.New()
-	router.Handler("GET", "/metrics", promhttp.Handler())
+	router.Handler("GET", *metricsPath, promhttp.Handler())
 
 	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		defer r.Body.Close() // nolint: errcheck, gas
